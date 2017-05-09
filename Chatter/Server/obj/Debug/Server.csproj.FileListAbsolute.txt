@@ -1,0 +1,8 @@
+C:\Users\Nurgle\Documents\GitHub\Chatter\Chatter\Server\obj\Debug\Server.csprojResolveAssemblyReference.cache
+C:\Users\Nurgle\Documents\GitHub\Chatter\Chatter\Server\bin\Debug\Server.exe.config
+C:\Users\Nurgle\Documents\GitHub\Chatter\Chatter\Server\bin\Debug\Server.exe
+C:\Users\Nurgle\Documents\GitHub\Chatter\Chatter\Server\bin\Debug\Server.pdb
+C:\Users\Nurgle\Documents\GitHub\Chatter\Chatter\Server\bin\Debug\Domain.dll
+C:\Users\Nurgle\Documents\GitHub\Chatter\Chatter\Server\bin\Debug\Domain.pdb
+C:\Users\Nurgle\Documents\GitHub\Chatter\Chatter\Server\obj\Debug\Server.exe
+C:\Users\Nurgle\Documents\GitHub\Chatter\Chatter\Server\obj\Debug\Server.pdb
