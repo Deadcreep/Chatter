@@ -74,13 +74,16 @@ namespace Client
 
                     Receive();
 
+                    // write into out param
                     contactsList = (List<string>)formatter.Deserialize(outStream);
 
+                    // obsolete
                     foreach(var temp in contactsList)
                     {
                         Console.WriteLine(temp);
                     }
 
+                    // from this new method Send in thread  
                     while (flagSendMessage)
                     {
                         if (tcpClientOut.GetLocalState() == System.Net.NetworkInformation.TcpState.Established)
@@ -145,7 +148,7 @@ namespace Client
                     {
                         var temp = formatter.Deserialize(stream);
                         var m = (Message)temp;
-                        Console.WriteLine(m.MessageText + "\t");
+                        Console.WriteLine(m + "\t"); //event newMessage
                     }
                     else
                     {

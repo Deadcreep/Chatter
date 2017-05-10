@@ -12,17 +12,23 @@ namespace Domain
         public string MessageText { get; private set; }
         public string SenderName { get; private set; }
         public string RecipientName { get; private set; }
-
+        public DateTime Time { get; private set; }
 
         public Message (string text, string sender, string recipient)
         {
             MessageText = text;
             SenderName = sender;
-            RecipientName = recipient;         
+            RecipientName = recipient;
+            Time = DateTime.Now;    
         }
 
         public Message()
         {
+        }
+
+        public override string ToString()
+        {
+            return Time.ToString() + " from: " + SenderName + System.Environment.NewLine + MessageText;
         }
     } 
 }

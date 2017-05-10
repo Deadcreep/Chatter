@@ -20,7 +20,7 @@ namespace Server
 
         public Receiver()
         {
-            server = new TcpListener(IPAddress.Parse("127.0.0.1"), 9050);
+            server = new TcpListener(IPAddress.Parse("192.168.1.105"), 9050);
             messagesForRecepient = new ConcurrentDictionary<string, ConcurrentQueue<Message>>();
             foreach (var client in Membership.ClientList)
             {
@@ -121,8 +121,12 @@ namespace Server
                         if (client.GetRemoteState() == System.Net.NetworkInformation.TcpState.Established)
                         {
                             Message m = (Message)formatter.Deserialize(inputStream);
+                            if(messagesForRecepient.ContainsKey(m.RecipientName) == false)
+                            {
+                                messagesForRecepient.AddOrUpdate(m.RecipientName, new ConcurrentQueue<Message>(), (k, v) => v);
+                            }
                             messagesForRecepient[m.RecipientName].Enqueue(m);
-                            Console.WriteLine(m.MessageText + "\t");
+                            Console.WriteLine(m + "\t");
                             Console.WriteLine("Message received \t \t");
                         }
                         else
@@ -131,7 +135,6 @@ namespace Server
                         }
                     }
                 }
-
             }
             catch (Exception e)
             {
