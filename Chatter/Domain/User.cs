@@ -10,6 +10,7 @@ namespace Domain
     [Serializable]
     public class User
     {
+        public const string BroadcastLogin = "Broadcast";
         public string Login { get;  set; }
         public string Password { get;  set; }        
 

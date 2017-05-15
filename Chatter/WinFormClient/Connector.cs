@@ -51,8 +51,7 @@ namespace WinFormClient
             else
             {
                 key = (int)formatter.Deserialize(tcpStream);
-                contacts = (List<string>)formatter.Deserialize(tcpStream);
-                
+                contacts = (List<string>)formatter.Deserialize(tcpStream);                
                 Receive();        
                 return true;
             }
@@ -100,26 +99,6 @@ namespace WinFormClient
         {
             IFormatter formatter = new BinaryFormatter();
             formatter.Serialize(tcpStream, mess.Message);
-        }
-        // senderClent
-        //event new message from server
-
-        // bool tryLogin (in login, pass , out list contact)
-        // senderClient = new tcpclient
-        // send User
-        //if(inccorect User)
-        //then return false
-        //else 
-        // get key from server
-        // get contacts from server
-        // assign contacts to out param
-
-        //start receiveThread 
-        //return true
-
-
-        //void OnNewMessageSent -- handler to event from window
-        // sender.stream
-        // form.ser(mess)
+        }        
     }
 }

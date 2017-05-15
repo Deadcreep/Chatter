@@ -9,6 +9,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Domain;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace Server
 {
@@ -17,6 +18,8 @@ namespace Server
         TcpListener server;
         ConcurrentDictionary<string, int> connectionKeys;
         ConcurrentDictionary<string, ConcurrentQueue<Message>> messagesForRecepient;
+        //ConcurrentDictionary<string, ConcurrentQueue<Message>> broadcastMessages;
+        
 
         public Receiver()
         {
@@ -115,17 +118,33 @@ namespace Server
                     connectionKeys.AddOrUpdate(currentUser.Login, key, (k, v) => v);
                     formatter.Serialize(inputStream, key);
                     var contacts = Membership.ClientList.Where(tempClient => tempClient.Login != currentUser.Login).Select(x => x.Login).ToList();
+                    contacts.Add(User.BroadcastLogin);
+
+                    foreach(var userName in contacts)
+                    {
+                        messagesForRecepient.AddOrUpdate(userName, new ConcurrentQueue<Message>(), (k, v) => v);
+                    }
+
                     formatter.Serialize(inputStream, contacts);
                     while (true)
                     {
                         if (client.GetRemoteState() == System.Net.NetworkInformation.TcpState.Established)
                         {
                             Message m = (Message)formatter.Deserialize(inputStream);
-                            if(messagesForRecepient.ContainsKey(m.RecipientName) == false)
+                            if (m.RecipientName == User.BroadcastLogin)
                             {
-                                messagesForRecepient.AddOrUpdate(m.RecipientName, new ConcurrentQueue<Message>(), (k, v) => v);
+                                foreach (var usver in contacts)
+                                {
+                                    if (usver != m.SenderName)
+                                    {
+                                        messagesForRecepient[usver].Enqueue(m);
+                                    }
+                                }
+                            }                           
+                            else
+                            {
+                                messagesForRecepient[m.RecipientName].Enqueue(m);
                             }
-                            messagesForRecepient[m.RecipientName].Enqueue(m);
                             Console.WriteLine(m + "\t");
                             Console.WriteLine("Message received \t \t");
                         }

@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Domain;
 using System.Configuration;
 
+
 namespace WinFormClient
 {
     public partial class MainForm : Form
@@ -25,6 +26,7 @@ namespace WinFormClient
         {
             InitializeComponent();
             messageHistory = new Dictionary<string, List<Domain.Message>>();
+            messageHistory.Add(User.BroadcastLogin, new List<Domain.Message>());
         }
 
         private void tryLoginButton_Click(object sender, EventArgs e)
@@ -49,19 +51,30 @@ namespace WinFormClient
 
         private void Connector_NewMessageReceived(NewMessageArgs args)
         {
-            if(!messageHistory.ContainsKey(args.Message.SenderName))
+            if (args.Message.RecipientName == User.BroadcastLogin)
             {
-                messageHistory.Add(args.Message.SenderName, new List<Domain.Message>());
+                messageHistory[User.BroadcastLogin].Add(args.Message);
             }
-
-            messageHistory[args.Message.SenderName].Add(args.Message);            
+            else
+            {
+                if (!messageHistory.ContainsKey(args.Message.SenderName))
+                {
+                    messageHistory.Add(args.Message.SenderName, new List<Domain.Message>());
+                }         
+            
+                messageHistory[args.Message.SenderName].Add(args.Message);
+            }      
             UpdateMessages temp = new UpdateMessages(UpdateView);
             this.Invoke(temp, args.Message);
         }
 
         private void UpdateView(Domain.Message mess)
         {
-            if (contactsListBox.SelectedItem.ToString() == mess.SenderName)
+            if(mess.RecipientName == User.BroadcastLogin && contactsListBox.SelectedItem.ToString() == User.BroadcastLogin)
+            {
+                UpdateMessagesTextBox(mess.ToString());
+            }
+            else if (contactsListBox.SelectedItem.ToString() == mess.SenderName && mess.RecipientName != User.BroadcastLogin)
             {
                 UpdateMessagesTextBox(mess.ToString());
             }
@@ -84,7 +97,7 @@ namespace WinFormClient
             MessagesTextBox.Clear();
             if (messageHistory.ContainsKey(contactsListBox.SelectedItem.ToString()))
             {
-                for (int i = messageHistory[selectedContact].Count-1; i >= 0; i--)
+                for (int i = 0; i <= messageHistory[selectedContact].Count - 1; i++)
                 {
                     MessagesTextBox.AppendText(messageHistory[selectedContact][i].ToString());
                     MessagesTextBox.AppendText(System.Environment.NewLine);
